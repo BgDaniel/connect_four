@@ -1,8 +1,11 @@
+import random as rd
+
 class Player:
     @property
     def HasWon(self):
         return self._hasWon
 
+    @property
     def Sign(self):
         return self._sign
 
@@ -21,9 +24,19 @@ class Player:
         else:
             pass
 
-    def dropDisc(self, pos):
-        self._game.placeDisc(pos)
-
     def tryWinNow(self):
-        free_pos = self._game.freePositions()
+        free_positions = self._game.freePositions()
+
+        for free_position in free_positions:
+            self._game.placeDisc(free_position, self)
+
+            if self._game.four() == self._sign:
+                return
+            else:
+                self._game.removeDisc(free_position)
+
+        rnd_pos = rd.randint(0, len(free_positions))
+        self._game.placeDisc(free_positions[rnd_pos], self)
+
+        
         

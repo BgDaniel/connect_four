@@ -1,5 +1,6 @@
 import numpy as np
 from player import Player
+from helpers import four_indices
 
 class ConnectFour:
     def __init__(self, boardShape=(6,7)):
@@ -19,7 +20,7 @@ class ConnectFour:
                 if self._board[i,j] == .0:
                     free_rows.append(i)
             if len(free_rows) != 0:
-                free.append((min(free_rows),j)) 
+                free.append((max(free_rows),j)) 
         return free
 
     def placeDisc(self, pos, player):
@@ -28,7 +29,17 @@ class ConnectFour:
         else:
             self._board[pos[0],pos[1]] = player.Sign
 
+    def removeDisc(self, pos):
+        self._board[pos[0],pos[1]] = 0
 
+    def four(self):
+        all_indices = four_indices(self._board)
+
+        for indices in all_indices:
+            chips = np.array([self._board[pos[0],pos[1]] for pos in indices])
+            chips = np.unique(chips)
+            if(len(chips)) == 1 and chips[0] != 0:
+                return chips[0]
 
     def finished(self):
         if len(self.freePositions()) == 0 or self._player_A.HasWon or self._player_B.HasWon:
@@ -37,16 +48,13 @@ class ConnectFour:
             return False  
 
     def play(self):
-        var = self._nbRw
-        
         for i in range(0, self._maxIter):
             if not self.finished():
                 self._player_A.makeMove()
             if not self.finished():
                 self._player_B.makeMove()
 
-    def four(self):
-        pass
+
 
 connect_four = ConnectFour()
 connect_four.play()
